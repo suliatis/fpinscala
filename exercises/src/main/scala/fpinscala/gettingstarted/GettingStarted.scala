@@ -1,5 +1,7 @@
 package fpinscala.gettingstarted
 
+import scala.reflect.ClassTag
+
 // A comment!
 /* Another comment */
 /** A documentation comment */
@@ -36,7 +38,14 @@ object MyModule {
 
   // Exercise 1: Write a function to compute the nth fibonacci number
 
-  def fib(n: Int): Int = ???
+  def fib(n: Int): Int = {
+    def loop(n: Int, prev: Int, next: Int): Int = n match {
+      case 0 => prev
+      case 1 => next
+      case _ => loop(n - 1, next, next + prev)
+    }
+    loop(n, 0, 1)
+  }
 
   // This definition and `formatAbs` are very similar..
   private def formatFactorial(n: Int) = {
@@ -129,7 +138,12 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A:ClassTag](as: Array[A], gt: (A,A) => Boolean): Boolean = as match {
+    case Array(x, y, tail@_*) =>
+      if (gt(x, y)) isSorted[A](y +: tail.toArray, gt)
+      else false
+    case _ => true
+  }
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
@@ -142,13 +156,13 @@ object PolymorphicFunctions {
   // Note that `=>` associates to the right, so we could
   // write the return type as `A => B => C`
   def curry[A,B,C](f: (A, B) => C): A => (B => C) =
-    ???
+    a => b => f(a, b)
 
   // NB: The `Function2` trait has a `curried` method already
 
   // Exercise 4: Implement `uncurry`
   def uncurry[A,B,C](f: A => B => C): (A, B) => C =
-    ???
+    (a, b) => f(a)(b)
 
   /*
   NB: There is a method on the `Function` object in the standard library,
@@ -163,5 +177,5 @@ object PolymorphicFunctions {
   // Exercise 5: Implement `compose`
 
   def compose[A,B,C](f: B => C, g: A => B): A => C =
-    ???
+    a => f(g(a))
 }
