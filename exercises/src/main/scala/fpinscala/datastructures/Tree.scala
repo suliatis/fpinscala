@@ -4,7 +4,6 @@ sealed trait Tree[+A]
 case class Leaf[A](value: A) extends Tree[A]
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 
-
 object Tree {
   def size[A](t: Tree[A]): Int = fold(t)(a => 1)(1 + _ + _)
 
@@ -16,5 +15,4 @@ object Tree {
     case Leaf(x) => f(x)
     case Branch(l,r) => g(fold(l)(f)(g),fold(r)(f)(g))
   }
-
 }
