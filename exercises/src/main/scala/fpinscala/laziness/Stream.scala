@@ -43,10 +43,6 @@ trait Stream[+A] {
 
   def map[B](f: A => B): Stream[B] = foldRight(Empty: Stream[B])((h, t) => cons(f(h), t))
 
-  def map[B](f: A => B): Stream[B] = this match {
-    case Cons(h, t) =>
-  }
-
   def filter(p: A => Boolean): Stream[A] = foldRight(Empty: Stream[A]) { (h, t) => if (p(h)) cons(h, t) else t }
 
   def append[B>:A](s: Stream[B]): Stream[B] = foldRight(s)((h, t) => cons(h, t))
